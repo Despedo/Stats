@@ -18,7 +18,7 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
 String statsUrl = "https://russianwarship.rip/api/v2/statistics/latest";
 
 // Set timer to 1 hour
-const unsigned long interval = 2 * 60 * 1000;
+const unsigned long interval = 60 * 60 * 1000;
 unsigned long previousMillis = 0;
 
 int httpResponseCode = 404;
@@ -550,7 +550,7 @@ void displayStats(long current, long increase, String unit, const uint8_t data_a
   display.clearDisplay();
 
   display.setTextSize(2);
-  printlnCenter("СЬОГОДНI", 48);
+  printlnCenter("ЗА ДОБУ", 48);
   display.setTextSize(3);
   printlnCenter("+" + String(increase), 10);
   display.display();
@@ -596,7 +596,7 @@ void updateStats()
     {
       blinkGreen();
       String payload = http.getString();
-      DynamicJsonDocument doc(1024);
+      DynamicJsonDocument doc(4096);
       deserializeJson(doc, payload);
 
       String date = doc["data"]["date"];
