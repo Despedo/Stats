@@ -581,6 +581,7 @@ void blinkBlue()
 
 void updateStats()
 {
+  Serial.println("Update status");
   if (WiFi.status() == WL_CONNECTED)
   {
     WiFiClientSecure client;
@@ -592,12 +593,23 @@ void updateStats()
 
     httpResponseCode = http.GET();
 
+    Serial.println("Response code:");
+    Serial.println(httpResponseCode);
+
+    int retryCount = 0;
+    if (httpResponseCode != 200 && retryCount <= 10){
+      httpResponseCode = http.GET();
+      Serial.println("Response retry:");
+      Serial.println(httpResponseCode);
+      retryCount = retryCount + 1;
+      delay(100);
+    }
+    
     if (httpResponseCode == 200)
     {
       blinkGreen();
-      String payload = http.getString();
-      DynamicJsonDocument doc(4096);
-      deserializeJson(doc, payload);
+      DynamicJsonDocument doc(2048);
+      deserializeJson(doc, http.getString());
 
       String date = doc["data"]["date"];
       currentDate = date;
